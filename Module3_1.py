@@ -13,28 +13,30 @@ lists_to_search = [["Сергей","Антон","Дмитрий","Валерий
                    ["абрикос", "дыня", "персик", "слива",]
 
                    ]
-def count_calls():
-    """Подсчитывает количество вызовов функций и
-       сохраняет в глобалльной переменной count_calls_fh"""
-    global count_calls_fn
-    count_calls_fn +=1
+def count_calls(func):
+    """Декоратор для подсчета количество вызовов функций,
+       сохраняет результат в глобалльной переменной count_calls_fh"""
+    def wrapper(*args, **kwargs):
+        global count_calls_fn
+        count_calls_fn += 1
+        return func(*args, **kwargs)
+    return wrapper
 
+@count_calls
 def string_info(string):
     """Получает строку и возвращает кортеж из длины строки, строки в верхнем регистре и
        строки в нижнем регистре"""
-    count_calls()
     string_data = (len(string), string.upper(), string.lower())
 
     return string_data
 
+@count_calls
 def is_contains(string, list_to_search):
     """Проверяет вхождение строки string в список list_to_search,
        возвращает True - если входит, False - если не входит,
        регистр не учитывается"""
-    count_calls()
-    for i in list_to_search:
-        if string.lower() in i.lower():
-            return True
+    if any([string.lower() in string_.lower() for string_ in list_to_search]):
+        return True
     return False
 
 for i in range(0,len(strings)):
